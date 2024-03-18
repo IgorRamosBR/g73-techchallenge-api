@@ -21,26 +21,17 @@ spec:
             - name: ENVIRONMENT
               value: dev
             - name: POSTGRES_HOST
-              value: postgres
+              value: $(POSTGRES_HOST)
             - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
+              value: $(POSTGRES_DBNAME)
             - name: POSTGRES_PORT
               value: '5432'
             - name: POSTGRES_SSLMODE
               value: disable
+            - name: POSTGRES_USERNAME
+              value: $(POSTGRES_USERNAME)
+            - name: POSTGRES_PASSWORD
+              value: $(POSTGRES_PASSWORD)
                 
           resources:
             limits:
