@@ -17,9 +17,6 @@ spec:
           image: igorramos/g37-lanches-api:v1.0.3
           ports:
             - containerPort: 8080
-          envFrom:
-            - secretRef:
-              name: db-secret
           env:
             - name: ENVIRONMENT
               value: prod
