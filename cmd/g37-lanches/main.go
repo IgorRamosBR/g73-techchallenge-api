@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"g37-lanchonete/configs"
 	"g37-lanchonete/internal/api"
 	"g37-lanchonete/internal/controllers"
@@ -56,12 +57,12 @@ func main() {
 func createPostgresSQLClient(appConfig configs.AppConfig) sqlDriver.SQLClient {
 	db, err := sqlDriver.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName)
 	if err != nil {
-		panic("failed to connect database")
+		panic(fmt.Errorf("failed to connect database, error %w", err))
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic("failed to ping database")
+		panic(fmt.Errorf("failed to ping database, error %w", err))
 	}
 
 	return db
