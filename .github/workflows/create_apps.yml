@@ -1,5 +1,6 @@
 name: 'Create/Update K8S Resources'
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
