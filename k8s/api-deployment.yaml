@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: g37-lanches-api
-          image: igorramos/g37-lanches-api:v1.0.4
+          image: igorramos/g37-lanches-api:v1.0.5
           ports:
             - containerPort: 8080
           env:
@@ -26,8 +26,6 @@ spec:
               value: $(POSTGRES_DBNAME)
             - name: POSTGRES_PORT
               value: '5432'
-            - name: POSTGRES_SSLMODE
-              value: disable
             - name: POSTGRES_USERNAME
               value: $(POSTGRES_USERNAME)
             - name: POSTGRES_PASSWORD
