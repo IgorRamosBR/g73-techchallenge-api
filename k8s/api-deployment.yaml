@@ -21,9 +21,9 @@ spec:
             - name: ENVIRONMENT
               value: prod
             - name: POSTGRES_HOST
-              value: $(POSTGRES_HOST)
+              value: 'g73-techchallenge-db.cxokeewukuer.us-east-1.rds.amazonaws.com'
             - name: POSTGRES_DB
-              value: $(POSTGRES_DBNAME)
+              value: 'techchallengedb'
             - name: POSTGRES_PORT
               value: '5432'
             - name: POSTGRES_USER
