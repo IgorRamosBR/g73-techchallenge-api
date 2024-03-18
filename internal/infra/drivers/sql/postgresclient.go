@@ -3,6 +3,7 @@ package sql
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	_ "github.com/lib/pq"
 )
@@ -12,7 +13,7 @@ type sqlClient struct {
 }
 
 func NewPostgresSQLClient(username, password, host, port, dbname string) (SQLClient, error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", username, password, host, port, dbname)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", strings.TrimSpace(username), strings.TrimSpace(password), host, port, dbname)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
