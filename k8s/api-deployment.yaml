@@ -17,30 +17,32 @@ spec:
           image: igorramos/g37-lanches-api:v1.0.3
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+              name: db-secret
           env:
             - name: ENVIRONMENT
-              value: dev
+              value: prod
             - name: POSTGRES_HOST
-              value: postgres
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_HOST
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
+                  name: db-configmap
+                  key: POSTGRES_DBNAME
             - name: POSTGRES_PORT
-              value: '5432'
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_PORT
             - name: POSTGRES_SSLMODE
-              value: disable
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_SSLMODE
                 
           resources:
             limits:

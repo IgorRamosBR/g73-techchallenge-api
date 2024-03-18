@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-configmap
+data:
+  POSTGRES_HOST: {{ .Env.POSTGRES_HOST }}
+  POSTGRES_DBNAME: {{ .Env.POSTGRES_DBNAME` }}
+  POSTGRES_PORT: '5432'
+  POSTGRES_SSLMODE: disable
