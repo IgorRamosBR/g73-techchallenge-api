@@ -17,6 +17,9 @@ spec:
           image: igorramos/g37-lanches-api:v1.0.6
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+              name: db-secret
           env:
             - name: ENVIRONMENT
               value: prod
@@ -26,10 +29,6 @@ spec:
               value: $(POSTGRES_DBNAME)
             - name: POSTGRES_PORT
               value: '5432'
-            - name: POSTGRES_USERNAME
-              value: $(POSTGRES_USERNAME)
-            - name: POSTGRES_PASSWORD
-              value: $(POSTGRES_PASSWORD)
                 
           resources:
             limits:
