@@ -6,11 +6,16 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+  POSTGRES_DBNAME: ${{ vars.POSTGRES_DBNAME }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USERNAME }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
 jobs:
   apply:
     name: 'Apply K8S Resources'
     runs-on: ubuntu-latest
+    environment: production 
 
     steps:
       - name: Checkout code
