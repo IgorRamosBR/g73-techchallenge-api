@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"fmt"
 	"g37-lanchonete/internal/core/entities"
 	"time"
 
@@ -55,10 +56,10 @@ func (o OrderItemDTO) toOrderItem() entities.OrderItem {
 }
 
 type OrderDTO struct {
-	Items      []OrderItemDTO `json:"items"`
-	Coupon     string         `json:"coupon" valid:"length(0|100)~Description length should be less than 100 characters"`
-	CustomerId int            `json:"customerId" valid:"length(0|200)~CustomerId length should be less than 200 characters"`
-	Status     OrderStatus    `json:"status" valid:"in(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE),required~Status is invalid"`
+	Items       []OrderItemDTO `json:"items"`
+	Coupon      string         `json:"coupon" valid:"length(0|100)~Description length should be less than 100 characters"`
+	CustomerCPF string         `json:"customerCpf"`
+	Status      OrderStatus    `json:"status" valid:"in(CREATED|PAID|RECEIVED|IN_PROGRESS|READY|DONE),required~Status is invalid"`
 }
 
 func (o OrderDTO) ToOrder(customer entities.Customer) entities.Order {
@@ -79,6 +80,11 @@ func (o OrderDTO) ToOrder(customer entities.Customer) entities.Order {
 func (o OrderDTO) ValidateOrder() (bool, error) {
 	if _, err := govalidator.ValidateStruct(o); err != nil {
 		return false, err
+	}
+
+	// Validate CPF using a custom function
+	if !isValidCPF(o.CustomerCPF) {
+		return false, fmt.Errorf("invalid CPF [%s]", o.CustomerCPF)
 	}
 
 	return true, nil

@@ -35,6 +35,14 @@ func handleNotFoundResponse(c *gin.Context, message string, err error) {
 	c.JSON(http.StatusNotFound, notFoundError)
 }
 
+func handleUnauthorizedResponse(c *gin.Context, message string, err error) {
+	unauthorizedError := ErrorResponse{
+		Message: message,
+		Err:     err.Error(),
+	}
+	c.JSON(http.StatusUnauthorized, unauthorizedError)
+}
+
 func handleInternalServerResponse(c *gin.Context, message string, err error) {
 	internalServerError := ErrorResponse{
 		Message: message,

@@ -21,6 +21,8 @@ type AppConfig struct {
 	DatabasePassword string
 	DatabaseSSLMode  string
 
+	AuthorizerURL string
+
 	SQSRegion   string
 	SQSEndpoint string
 
@@ -89,6 +91,8 @@ func (c *Config) extractConfigVars() (AppConfig, error) {
 	appConfig.DatabaseSSLMode = c.viper.GetString("POSTGRES_SSLMODE")
 	appConfig.DatabaseUser = c.viper.GetString("POSTGRES_USER")
 	appConfig.DatabasePassword = c.viper.GetString("POSTGRES_PASSWORD")
+
+	appConfig.AuthorizerURL = c.viper.GetString("AUTHORIZER_URL")
 
 	appConfig.PaymentBrokerURL = c.viper.GetString("paymentBroker.url")
 	appConfig.NotificationURL = c.viper.GetString("paymentBroker.notificationUrl")
