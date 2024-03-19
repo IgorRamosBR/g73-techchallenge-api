@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 env:
+  EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
   POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
   POSTGRES_DBNAME: ${{ vars.POSTGRES_DBNAME }}
   POSTGRES_USER: ${{ secrets.POSTGRES_USERNAME }}
@@ -26,6 +27,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
+      - name: Update kubeconfig for EKS cluster
+        run: aws eks --region us-east-1 update-kubeconfig --name $EKS_CLUSTER_NAME
+
       - name: Install kubectl
         uses: azure/setup-kubectl@v1
         with:
@@ -33,7 +37,6 @@ jobs:
 
       - name: Apply Kubernetes manifest
         run: |
-          kubectl apply -f k8s/secret.yaml
-          kubectl apply -f k8s/db-configmap.yaml
+          kubectl apply -f k8s/db-secret.yaml
           kubectl apply -f k8s/api-service.yaml
           kubectl apply -f k8s/api-deployment.yaml

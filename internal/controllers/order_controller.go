@@ -4,6 +4,7 @@ import (
 	"errors"
 	"g37-lanchonete/internal/core/usecases"
 	"g37-lanchonete/internal/core/usecases/dto"
+	"g37-lanchonete/internal/infra/drivers/authorizer"
 	"net/http"
 	"strconv"
 
@@ -36,6 +37,10 @@ func (c OrderController) CreateOrder(ctx *gin.Context) {
 
 	createResponse, err := c.orderUsecase.CreateOrder(order)
 	if err != nil {
+		if errors.Is(err, authorizer.ErrUnauthorized) {
+			handleUnauthorizedResponse(ctx, "customer cpf invalid", err)
+			return
+		}
 		handleInternalServerResponse(ctx, "failed to create product", err)
 		return
 	}

@@ -17,15 +17,15 @@ type OrderUsecase interface {
 }
 
 type orderUsecase struct {
-	customerUsecase        CustomerUsecase
+	authorizerUsecase      AuthorizerUsecase
 	paymentUsecase         PaymentUsecase
 	productUsecase         ProductUsecase
 	orderRepositoryGateway gateways.OrderRepositoryGateway
 }
 
-func NewOrderUsecase(customerUsecase CustomerUsecase, paymentUsecase PaymentUsecase, productUsecase ProductUsecase, orderRepositoryGateway gateways.OrderRepositoryGateway) OrderUsecase {
+func NewOrderUsecase(authorizerUsecase AuthorizerUsecase, paymentUsecase PaymentUsecase, productUsecase ProductUsecase, orderRepositoryGateway gateways.OrderRepositoryGateway) OrderUsecase {
 	return orderUsecase{
-		customerUsecase:        customerUsecase,
+		authorizerUsecase:      authorizerUsecase,
 		paymentUsecase:         paymentUsecase,
 		productUsecase:         productUsecase,
 		orderRepositoryGateway: orderRepositoryGateway,
@@ -44,15 +44,15 @@ func (u orderUsecase) GetAllOrders(pageParams dto.PageParams) (dto.Page[entities
 }
 
 func (u orderUsecase) CreateOrder(orderDTO dto.OrderDTO) (dto.OrderCreationResponse, error) {
-	// Obter o cliente pelo ID
-	customer, err := u.customerUsecase.GetCustomerById(orderDTO.CustomerId)
+	// Authorize user
+	user, err := u.authorizerUsecase.AuthorizeUser(orderDTO.CustomerCPF)
 	if err != nil {
-		log.Errorf("failed to get customer [%d], error: %v", orderDTO.CustomerId, err)
+		log.Errorf("failed to authorize customer [%s], error: %v", orderDTO.CustomerCPF, err)
 		return dto.OrderCreationResponse{}, err
 	}
 
 	// Criar um pedido a partir do DTO
-	order := orderDTO.ToOrder(customer)
+	order := orderDTO.ToOrder(entities.Customer{ID: user.UserId})
 
 	// Calcular o total dos produtos
 	totalAmount, err := u.calculateProducts(order.Items)

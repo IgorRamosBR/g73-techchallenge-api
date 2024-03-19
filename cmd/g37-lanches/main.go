@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"g37-lanchonete/configs"
 	"g37-lanchonete/internal/api"
 	"g37-lanchonete/internal/controllers"
 	"g37-lanchonete/internal/core/usecases"
+	authorizerDriver "g37-lanchonete/internal/infra/drivers/authorizer"
 	httpDriver "g37-lanchonete/internal/infra/drivers/http"
 	paymentDriver "g37-lanchonete/internal/infra/drivers/payment"
 	sqlDriver "g37-lanchonete/internal/infra/drivers/sql"
@@ -22,14 +24,17 @@ func main() {
 		panic(err)
 	}
 
-	httpClient := httpDriver.NewHttpClient()
+	paymentClient := httpDriver.NewMockHttpClient()
 	postgresSQLClient := createPostgresSQLClient(appConfig)
 	err = performMigrations(postgresSQLClient)
 	if err != nil {
 		panic(err)
 	}
 
-	paymentBroker := paymentDriver.NewMercadoPagoBroker(httpClient, appConfig.PaymentBrokerURL)
+	authorizerClient := httpDriver.NewHttpClient()
+	authorizer := authorizerDriver.NewAuthorizer(authorizerClient, appConfig.AuthorizerURL)
+
+	paymentBroker := paymentDriver.NewMercadoPagoBroker(paymentClient, appConfig.PaymentBrokerURL)
 
 	customerRepositoryGateway := gateways.NewCustomerRepositoryGateway(postgresSQLClient)
 	productRepositoryGateway := gateways.NewProductRepositoryGateway(postgresSQLClient)
@@ -38,7 +43,8 @@ func main() {
 	customerUsecase := usecases.NewCustomerUsecase(customerRepositoryGateway)
 	productUsecase := usecases.NewProductUsecase(productRepositoryGateway)
 	paymentUsecase := usecases.NewPaymentUsecase(appConfig.NotificationURL, appConfig.SponsorId, paymentBroker)
-	orderUsecase := usecases.NewOrderUsecase(customerUsecase, paymentUsecase, productUsecase, orderRepositoryGateway)
+	authorizerUsecase := usecases.NewAuthorizerUsecase(authorizer)
+	orderUsecase := usecases.NewOrderUsecase(authorizerUsecase, paymentUsecase, productUsecase, orderRepositoryGateway)
 
 	customerController := controllers.NewCustomerController(customerUsecase)
 	productController := controllers.NewProductController(productUsecase)
@@ -56,12 +62,12 @@ func main() {
 func createPostgresSQLClient(appConfig configs.AppConfig) sqlDriver.SQLClient {
 	db, err := sqlDriver.NewPostgresSQLClient(appConfig.DatabaseUser, appConfig.DatabasePassword, appConfig.DatabaseHost, appConfig.DatabasePort, appConfig.DatabaseName)
 	if err != nil {
-		panic("failed to connect database")
+		panic(fmt.Errorf("failed to connect database, error %w", err))
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic("failed to ping database")
+		panic(fmt.Errorf("failed to ping database, error %w", err))
 	}
 
 	return db
