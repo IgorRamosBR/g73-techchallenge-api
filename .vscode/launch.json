@@ -12,15 +12,17 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {
-                "ENVIRONMENT": "dev",
+                "ENVIRONMENT": "prod",
                 "CONFIG_DIR_PATH": "../../configs",
-                "POSTGRES_HOST": "localhost",
-                "POSTGRES_DB": "g37_lanches",
-                "POSTGRES_USER": "admin",
-                "POSTGRES_PASSWORD": "admin",
+                "POSTGRES_HOST": "g73-techchallenge-db.cxokeewukuer.us-east-1.rds.amazonaws.com",
+                "POSTGRES_DB": "techchallengedb",
+                "POSTGRES_USER": "g73_admin_user",
+                "POSTGRES_PASSWORD": "UV6RetyeibtF",
                 "POSTGRES_PORT": "5432",
-                "POSTGRES_SSLMODE": "disable"
+                "POSTGRES_SSLMODE": "disable",
+                "AUTHORIZER_URL": "https://o1kfue6x0c.execute-api.us-east-1.amazonaws.com/production/auth"
             }
         }
     ]
+
 }
