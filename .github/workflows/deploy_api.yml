@@ -5,6 +5,9 @@ on:
     tags:
     - '**'
 
+env:
+  EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
+  
 jobs:
   build:
     name: Build and Push Docker Image
