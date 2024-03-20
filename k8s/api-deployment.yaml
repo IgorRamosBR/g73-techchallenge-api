@@ -21,6 +21,8 @@ spec:
           env:
             - name: ENVIRONMENT
               value: prod
+            - name: AUTHORIZER_URL
+              value: 'https://o1kfue6x0c.execute-api.us-east-1.amazonaws.com/production/auth'
             - name: POSTGRES_HOST
               value: 'g73-techchallenge-db.cxokeewukuer.us-east-1.rds.amazonaws.com'
             - name: POSTGRES_DB
@@ -45,3 +47,12 @@ spec:
             requests:
               cpu: "0.25"
               memory: "256Mi"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - general
